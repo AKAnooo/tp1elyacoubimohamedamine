@@ -115,26 +115,60 @@ public class Bb implements Serializable {
      */
     public String envoyer() {
         if (question == null || question.isBlank()) {
-            // Erreur ! Le formulaire va être réaffiché en réponse à la requête POST, avec un message d'erreur.
             FacesMessage message = new FacesMessage(FacesMessage.SEVERITY_ERROR,
                     "Texte question vide", "Il manque le texte de la question");
             facesContext.addMessage(null, message);
             return null;
         }
-        // Entourer la réponse avec "||".
+
         this.reponse = "||";
-        // Si la conversation n'a pas encore commencé, ajouter le rôle système au début de la réponse
+
         if (this.conversation.isEmpty()) {
-            // Ajouter le rôle système au début de la réponse
             this.reponse += roleSysteme.toUpperCase(Locale.FRENCH) + "\n";
-            // Invalide le bouton pour changer le rôle système
             this.roleSystemeChangeable = false;
         }
-        this.reponse += question.toLowerCase(Locale.FRENCH) + "||";
-        // La conversation contient l'historique des questions-réponses depuis le début.
+
+
+        String q = question.trim();
+        String[] mots = q.split("\\s+");
+        int nbMots = mots.length;
+        int nbLettresSansEspaces = q.replaceAll("\\s+", "").length();
+        int nbVoyelles = q.replaceAll("(?i)[^aeiouyàâäéèêëîïôöùûüÿ]", "").length();
+
+        // Détection des mots palindromes
+        List<String> palindromes = new ArrayList<>();
+        for (String mot : mots) {
+            if (estPalindromeMot(mot)) {
+                palindromes.add(mot);
+            }
+        }
+        int nbPalindromes = palindromes.size();
+
+        String rendu = "« " + q + " »\n"
+                + "Resultat : mots=" + nbMots
+                + ", lettres =" + nbLettresSansEspaces
+                + ", voyelles=" + nbVoyelles
+                + ", nbr_de_palindromes=" + nbPalindromes;
+
+        if (nbPalindromes > 0) {
+            rendu += " (" + String.join(", ", palindromes) + ")";
+        }
+
+        this.reponse += rendu + "||";
+        // ---------------------------------
+
         afficherConversation();
         return null;
     }
+
+
+    private boolean estPalindromeMot(String mot) {
+        String nettoye = mot.toLowerCase(Locale.FRENCH)
+                .replaceAll("[^a-z0-9àâäéèêëîïôöùûüÿç]", "");
+        if (nettoye.length() <= 1) return false; // ignorer les lettres seules
+        return new StringBuilder(nettoye).reverse().toString().equals(nettoye);
+    }
+
 
     /**
      * Pour un nouveau chat.
