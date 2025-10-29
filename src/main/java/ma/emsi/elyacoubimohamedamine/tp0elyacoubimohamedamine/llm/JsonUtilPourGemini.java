@@ -135,7 +135,7 @@ public class JsonUtilPourGemini implements Serializable {
                 .build();
 
         JsonObject userContent = Json.createObjectBuilder()
-                .add("role", "user")
+                .add("role", "system")
                 .add("parts", userContentParts)
                 .build();
 
