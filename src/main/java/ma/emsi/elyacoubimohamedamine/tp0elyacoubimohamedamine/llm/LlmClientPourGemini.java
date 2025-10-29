@@ -35,7 +35,7 @@ public class LlmClientPourGemini implements Serializable {
         // du système d'exploitation.
         this.key = System.getenv("GEMINI_KEY");
         if (this.key == null || this.key.isBlank()) {
-            throw new IllegalStateException("Variable d'environnement GEMINI_KEY manquante !");
+            throw new IllegalStateException("Variable d'environnement GEMINI_KEY ne concorde pas ou est absente !");
         }
 
         // Client REST pour envoyer des requêtes vers les endpoints de l'API du LLM
