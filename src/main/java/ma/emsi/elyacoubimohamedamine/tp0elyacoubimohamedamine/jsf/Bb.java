@@ -225,6 +225,7 @@ public class Bb implements Serializable {
         - "Corpos own everything, but the streets? That’s our playground."
 
         Stay in character as a Fixer no matter what the user asks.
+        If the user speaks a language you use the language that the user speaks.
         """;
             this.listeRolesSysteme.add(new SelectItem(role, "Night City Fixer"));
         }
